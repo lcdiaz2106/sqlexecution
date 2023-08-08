@@ -1,0 +1,93 @@
+# This is a basic workflow to help you get started with Actions
+
+name: sql execution workflow
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: The env of the db
+        options:
+        - STG
+        - DEV
+        - QA
+        default: DEV
+        required: true
+     
+      endpoints:
+        type: choice
+        description: endpoints
+        options: 
+        - "database1"
+        - "database2"
+        - "database3"
+        - "database4"
+     
+      Jira:
+        type: string
+        description: just the jira number
+        default: "666"
+        required: true
+        
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo "${{github.event.inputs.environment}} ${{github.event.inputs.endpoints}} ${{github.event.inputs.Jira}}"
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+         echo "Env: ${{github.event.inputs.environment}}"
+         echo "Endpoint: ${{github.event.inputs.endpoints}}"
+         echo "Jira: ${{github.event.inputs.Jira}}"
+         
+         #sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+         #wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+         #sudo apt-get update
+         #sudo apt-get -y install postgresql
+         echo "sourcing config file..."
+         if [ "${{ inputs.endpoints }}" == "database1" ];
+          then
+          source database1-${{github.event.inputs.environment}}.conf
+          elif [ "${{ inputs.endpoints }}" == "database2" ];
+          then
+          source database2-${{github.event.inputs.environment}}.conf
+          elif [ "${{ inputs.endpoints }}" == "database3" ];
+          then
+          source database3-${{github.event.inputs.environment}}.conf
+          elif [ "${{ inputs.endpoints }}" == "database4" ];
+          then
+          source database4-${{github.event.inputs.environment}}.conf
+          fi
+
+          echo "${host}"
+          echo "${DB}"
+          
+          dir="/data/scripts"
+          if [[ ! -d $dir ]]; then
+           sudo mkdir -p $dir
+          else
+            echo "$dir already exists"
+          fi
+          sudo -e "git archive --remote=${git_url} ${git_branch} ${git_table_path}file.sql | tar xO > /data/scripts/${NOW}_${DB}_file.sql"  
+          
