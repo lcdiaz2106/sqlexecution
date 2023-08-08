@@ -7,6 +7,7 @@ on:
         description: 'Selecciona un entorno'
         required: true
         default: 'DEV'
+        type: list
         options: 
           DEV: 'Desarrollo'
           QA: 'Control de calidad'
@@ -21,17 +22,16 @@ jobs:
       id: get_username
       run: echo "::set-output name=username::${{ github.actor }}"
     
-    - name: Associated app
-      id: determine_app
-      run: |
-        username=${{ steps.get_username.outputs.username }}
-        if [ "$username" == "Josep" ]; then
-          echo "::set-output name=app::reviews"
-        elif [ "$username" == "ruben" ]; then
-          echo "::set-output name=app::Localsites"
-        else
-          echo "::set-output name=app::OtherApp"
-    
+- name: Associated app
+  id: determine_app
+  run: |
+    username=${{ steps.get_username.outputs.username }}
+    if [ "$username" == "Josep" ]; then
+      echo "app=reviews" >> $GITHUB_ENV
+    elif [ "$username" == "ruben" ]; then
+      echo "app=Localsites" >> $GITHUB_ENV
+    else
+      echo "app=OtherApp" >> $GITHUB_ENV
     - name: Endpoint depending on user
       id: determine_host_options
       run: |
