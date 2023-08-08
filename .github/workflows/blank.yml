@@ -89,5 +89,5 @@ jobs:
           else
             echo "$dir already exists"
           fi
-          sudo -e "git archive --remote=${git_url} ${git_branch} ${git_table_path}file.sql | tar xO > /data/scripts/${NOW}_${DB}_file.sql"  
+          echo ${{github.event.inputs.endpoints}}-${{github.event.inputs.environment}}.conf
           
