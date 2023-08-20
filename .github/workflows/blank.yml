@@ -1,3 +1,4 @@
+
 name: Sql execution
 
 on:
@@ -7,39 +8,50 @@ on:
         description: 'Selecciona un entorno'
         required: true
         default: 'DEV'
-        type: list
-        options: 
-          DEV: 'Desarrollo'
-          QA: 'Control de calidad'
-          STG: 'Preproducción'
-  
+        type: choice
+        options:
+        - dev
+        - qa
+        - stg
+ 
+      jira:
+        description: 'Jira number'
+        required: true
+ 
 jobs:
   determine_host_options:
     runs-on: ubuntu-latest
-    
+   
     steps:
     - name: Get username
       id: get_username
       run: echo "::set-output name=username::${{ github.actor }}"
-    
-- name: Associated app
-  id: determine_app
-  run: |
-    username=${{ steps.get_username.outputs.username }}
-    if [ "$username" == "Josep" ]; then
-      echo "app=reviews" >> $GITHUB_ENV
-    elif [ "$username" == "ruben" ]; then
-      echo "app=Localsites" >> $GITHUB_ENV
-    else
-      echo "app=OtherApp" >> $GITHUB_ENV
-    - name: Endpoint depending on user
-      id: determine_host_options
+
+    - name: Run Config Check
+      id: config-check
       run: |
-        app=${{ steps.determine_app.outputs.app }}
-        user=${{ steps.get_username.outputs.username }}
-        environment=${{ github.event.inputs.environment }}
+        # Use your script/command to find and process config files
+        username=${{ github.actor }}
+        env=${{ inputs.environment }}
+        files=$(find configs/$username -name "*$env.conf")
         
-        echo "Aplicación: $app"
-        echo "Usuario: $user"
-        echo "Entorno: $environment"
-        echo "hosts: ${user}-${app}-${environment}, ${user}-${app}-${environment}"
+        for file in $files; do
+          filename=$(basename -- "$file")
+          db_name=${filename%-*}
+          echo "Found config file: $file, DB name: $db_name"
+        done
+    
+    #- name: Checkout private tools
+    #  uses: actions/checkout@v3
+    #  with:
+    #    repository: my-org/my-private-tools
+    #    token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+    #    path: my-tools
+             
+    - name: psql_exec
+      run: |
+       #sudo apt install wget ca-certificates
+       #wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+       #sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+       #sudo apt update
+       #sudo apt install postgresql postgresql-contrib
