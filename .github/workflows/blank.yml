@@ -35,22 +35,12 @@ jobs:
         env=${{ inputs.environment }}
         files=$(find configs/$username -name "*$env.conf")
         
-        #for file in $files; do
-        #  filename=$(basename -- "$file")
-        ##  db_name=${filename%-*}
-        #  echo "Found config file: $file, DB name: $db_name"
-        #done
-        echo $username
-        echo $env
-        echo $file
-        
-    #- name: Checkout private tools
-    #  uses: actions/checkout@v3
-    #  with:
-    #    repository: my-org/my-private-tools
-    #    token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-    #    path: my-tools
-             
+        for file in $files; do
+          filename=$(basename -- "$file")
+          db_name=${filename%-*}
+          echo "Found config file: $file, DB name: $db_name"
+        done
+                     
     - name: psql_exec
       run: |
        #sudo apt install wget ca-certificates
