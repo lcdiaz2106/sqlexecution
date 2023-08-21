@@ -27,6 +27,9 @@ jobs:
       id: get_username
       run: echo "username=${{ github.actor }}" >> "$GITHUB_OUTPUT"
 
+    - name: Checkout
+      uses: actions/checkout@v2.3.2
+        
     - name: Run Config Check
       id: config-check
       run: |
@@ -38,13 +41,13 @@ jobs:
         echo $env
         echo $jira
         
-        files=$(find ./configs/$username -name "*$env.conf")   
+        files=$(find configs/$username -name "*$env.conf")   
         
-        #for file in $files; do
-        #  filename=$(basename -- "$file")
-        #  db_name=${filename%-*}
-        #  echo "Found config file: $file, DB name: $db_name"
-        #done
+        for file in $files; do
+          filename=$(basename -- "$file")
+          db_name=${filename%-*}
+          echo "Found config file: $file, DB name: $db_name"
+        done
                      
     - name: psql_exec
       run: |
