@@ -37,18 +37,17 @@ jobs:
         username=${{ github.actor }}
         env=${{ inputs.environment }}
         jira=${{ inputs.jira }}
-        echo $username
-        echo $env
-        echo $jira
         
         files=$(find configs/$username -name "*$env.conf")   
         
         for file in $files; do
-          filename=$(basename -- "$file")
-          db_name=${filename%-*}
-          echo "Found config file: $file, DB name: $db_name"
+          source "$file"
         done
-                     
+
+        echo $host
+        echo $adminUser
+        echo $DB
+        
     - name: psql_exec
       run: |
        #sudo apt install wget ca-certificates
