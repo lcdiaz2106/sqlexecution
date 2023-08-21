@@ -31,15 +31,19 @@ jobs:
       id: config-check
       run: |
         # Use your script/command to find and process config files
-        username=${{ github.actor }}
+        username=$GITHUB_OUTPUT
         env=${{ inputs.environment }}
-        files=$(find configs/${{ github.actor }} -name "*$env.conf")
+        echo $username
+        echo $env
+        echo $jira
         
-        for file in $files; do
-          filename=$(basename -- "$file")
-          db_name=${filename%-*}
-          echo "Found config file: $file, DB name: $db_name"
-        done
+        #files=$(find configs/${{ github.actor }} -name "*$env.conf")
+        
+        #for file in $files; do
+        #  filename=$(basename -- "$file")
+        #  db_name=${filename%-*}
+        #  echo "Found config file: $file, DB name: $db_name"
+        #done
                      
     - name: psql_exec
       run: |
