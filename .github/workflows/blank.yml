@@ -35,6 +35,7 @@ jobs:
        sudo apt update
        sudo apt install postgresql postgresql-contrib
 
+# Checkout repo local
     - name: Checkout
       uses: actions/checkout@v2.3.2
         
@@ -51,4 +52,13 @@ jobs:
         for file in $files; do
           source "$file"
         done
+        echo $repourl
+
+    - name: Checkout private tools
+      uses: actions/checkout@v3
+      with:
+        repository: ${{my-org/my-private-tools
+        token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+        path: my-tools
+
         echo "psql -X -U ${adminUser} -h ${host} ${DB} -f scripts/file.sql --echo-all -o /output/result.txt"
