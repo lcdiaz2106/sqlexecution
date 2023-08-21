@@ -21,7 +21,12 @@ on:
 jobs:
   determine_host_options:
     runs-on: ubuntu-latest
-   
+    outputs:
+     username: ${{ steps.get_username.outputs.username }}
+     git_url: ${{ steps.config-check.outputs.git_url }}
+     git_table_path: ${{ steps.config-check.outputs.git_table_path }}
+     git_branch: ${{ steps.config-check.outputs.git_branch }}
+     
     steps:
     - name: Get username
       id: get_username
@@ -52,13 +57,15 @@ jobs:
         for file in $files; do
           source "$file"
         done
-        echo $repourl
+        echo $git_url >> "$GITHUB_OUTPUT"
+        echo $git_table_path >> "$GITHUB_OUTPUT"
+        echo $git_branch >> "$GITHUB_OUTPUT"
 
     - name: Checkout private tools
       uses: actions/checkout@v3
       with:
-        repository: ${{my-org/my-private-tools
+        repository: ${{ github.$git_url }}
         token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-        path: my-tools
+        path: ${{ github.$git_table_path }}
 
         echo "psql -X -U ${adminUser} -h ${host} ${DB} -f scripts/file.sql --echo-all -o /output/result.txt"
