@@ -38,7 +38,7 @@ jobs:
         echo $env
         echo $jira
         
-        find configs/${{ github.actor }} -name "*$env.conf")
+        files=$(find ./configs/$username -name "*$env.conf")   
         
         #for file in $files; do
         #  filename=$(basename -- "$file")
