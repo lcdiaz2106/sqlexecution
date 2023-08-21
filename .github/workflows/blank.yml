@@ -33,7 +33,7 @@ jobs:
         # Use your script/command to find and process config files
         username=${{ github.actor }}
         env=${{ inputs.environment }}
-        files=$(find configs/$username -name "*$env.conf")
+        files=$(find configs/${{ github.actor }} -name "*$env.conf")
         
         for file in $files; do
           filename=$(basename -- "$file")
