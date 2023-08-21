@@ -33,14 +33,15 @@ jobs:
         # Use your script/command to find and process config files
         username=${{ github.actor }}
         env=${{ inputs.environment }}
-        files=$(find configs/$username -name "*$env.conf")
+        #files=$(find configs/$username -name "*$env.conf")
         
-        for file in $files; do
-          filename=$(basename -- "$file")
-          db_name=${filename%-*}
-          echo "Found config file: $file, DB name: $db_name"
-        done
-    
+        #for file in $files; do
+        #  filename=$(basename -- "$file")
+        ##  db_name=${filename%-*}
+        #  echo "Found config file: $file, DB name: $db_name"
+        #done
+        echo $username
+        echo $env
     #- name: Checkout private tools
     #  uses: actions/checkout@v3
     #  with:
