@@ -25,7 +25,7 @@ jobs:
     steps:
     - name: Get username
       id: get_username
-      run: echo "::set-output name=username::${{ github.actor }}"
+      run: echo "username=${{ github.actor }}" >> "$GITHUB_OUTPUT"
 
     - name: Run Config Check
       id: config-check
