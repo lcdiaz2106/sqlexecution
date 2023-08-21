@@ -27,6 +27,14 @@ jobs:
       id: get_username
       run: echo "username=${{ github.actor }}" >> "$GITHUB_OUTPUT"
 
+    - name: psql_exec
+      run: |
+       sudo apt install wget ca-certificates
+       wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+       sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+       sudo apt update
+       sudo apt install postgresql postgresql-contrib
+
     - name: Checkout
       uses: actions/checkout@v2.3.2
         
@@ -43,13 +51,4 @@ jobs:
         for file in $files; do
           source "$file"
         done
-        
-    - name: psql_exec
-      run: |
-       sudo apt install wget ca-certificates
-       wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-       sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-       sudo apt update
-       sudo apt install postgresql postgresql-contrib
-
-       echo "psql -X -U ${adminUser} -h ${host} ${DB}  -f scripts/file.sql --echo-all -o /output/result.txt"
+        echo "psql -X -U ${adminUser} -h ${host} ${DB} -f scripts/file.sql --echo-all -o /output/result.txt"
