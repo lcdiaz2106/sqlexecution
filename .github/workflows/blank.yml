@@ -33,7 +33,7 @@ jobs:
         # Use your script/command to find and process config files
         username=${{ github.actor }}
         env=${{ inputs.environment }}
-        jira=${{ github.jira }}
+        jira=${{ inputs.jira }}
         echo $username
         echo $env
         echo $jira
