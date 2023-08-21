@@ -32,6 +32,7 @@ jobs:
       id: get_username
       run: echo "username=${{ github.actor }}" >> "$GITHUB_OUTPUT"
 
+# Load postgres dependencies, client etc
     - name: psql_exec
       run: |
        sudo apt install wget ca-certificates
@@ -64,8 +65,7 @@ jobs:
     - name: Checkout private tools
       uses: actions/checkout@v3
       with:
-        repository: ${{ github.$git_url }}
-        token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-        path: ${{ github.$git_table_path }}
+        repository: ${{ steps.config-check.outputs.git_url }}
+        path: ${{ steps.config-check.outputs.git_table_path }}
 
         echo "psql -X -U ${adminUser} -h ${host} ${DB} -f scripts/file.sql --echo-all -o /output/result.txt"
