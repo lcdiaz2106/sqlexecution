@@ -43,15 +43,13 @@ jobs:
         for file in $files; do
           source "$file"
         done
-
-        echo $host
-        echo $adminUser
-        echo $DB
         
     - name: psql_exec
       run: |
-       #sudo apt install wget ca-certificates
-       #wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-       #sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-       #sudo apt update
-       #sudo apt install postgresql postgresql-contrib
+       sudo apt install wget ca-certificates
+       wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+       sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+       sudo apt update
+       sudo apt install postgresql postgresql-contrib
+
+       psql -X -U ${adminUser} -h ${host} ${DB}  -f scripts/file.sql --echo-all -o /output/result.txt
