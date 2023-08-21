@@ -31,8 +31,9 @@ jobs:
       id: config-check
       run: |
         # Use your script/command to find and process config files
-        username=$GITHUB_OUTPUT
+        username=${{ github.actor }}
         env=${{ inputs.environment }}
+        jira=${{ github.jira }}
         echo $username
         echo $env
         echo $jira
